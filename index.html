@@ -1,0 +1,1440 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AcadWallet — Vel Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #0b0f1a;
+  --surface: #131929;
+  --card: #1a2235;
+  --border: #243050;
+  --accent: #4f8ef7;
+  --accent2: #7c5ff7;
+  --gold: #f5c842;
+  --green: #3ecf8e;
+  --red: #f56565;
+  --text: #e8edf5;
+  --muted: #7a8baa;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* BACKGROUND MESH */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(79,142,247,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(124,95,247,0.10) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── SCREENS ─── */
+.screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ─── SPLASH ─── */
+#splash {
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}
+.splash-logo {
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeUp 0.8s ease both;
+}
+.splash-sub {
+  color: var(--muted);
+  font-size: 15px;
+  margin-top: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 300;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+.splash-bar {
+  width: 180px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 99px;
+  margin-top: 40px;
+  overflow: hidden;
+  animation: fadeUp 0.8s 0.4s ease both;
+}
+.splash-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 99px;
+  animation: loadBar 1.8s 0.6s ease forwards;
+  width: 0;
+}
+@keyframes loadBar { to { width: 100%; } }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── REGISTER ─── */
+#register {
+  align-items: center;
+  justify-content: flex-start;
+  padding: 30px 16px 60px;
+}
+.reg-header {
+  text-align: center;
+  margin-bottom: 30px;
+  animation: fadeUp 0.5s ease both;
+}
+.reg-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.reg-header p { color: var(--muted); font-size: 13px; margin-top: 6px; }
+
+.form-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 500px;
+  animation: fadeUp 0.5s 0.1s ease both;
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 20px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label:first-child { margin-top: 0; }
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.field input, .field select {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 14px;
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--accent);
+}
+.field select option { background: var(--surface); }
+
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
+  letter-spacing: 0.3px;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-primary:active { transform: scale(0.99); }
+
+.login-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.login-link span { color: var(--accent); cursor: pointer; font-weight: 600; }
+
+/* ─── LOGIN ─── */
+#login {
+  align-items: center;
+  justify-content: center;
+  padding: 30px 16px;
+}
+.login-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 36px 28px;
+  width: 100%;
+  max-width: 400px;
+  animation: fadeUp 0.5s ease both;
+}
+.login-card h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.login-card p { color: var(--muted); font-size: 13px; margin-bottom: 26px; }
+
+/* ─── MAIN APP ─── */
+#app { flex-direction: column; }
+
+/* TOP NAV */
+.topnav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topnav-logo {
+  font-size: 20px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.topnav-right { display: flex; align-items: center; gap: 14px; }
+.avatar-btn {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: white;
+  font-weight: 700;
+  overflow: hidden;
+}
+.avatar-btn img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+/* TABS */
+.tabs {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.tab {
+  flex: 1;
+  padding: 13px 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  letter-spacing: 0.5px;
+}
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* TAB PANELS */
+.tab-panel { display: none; padding: 20px 16px 100px; }
+.tab-panel.active { display: block; }
+
+/* WELCOME BANNER */
+.welcome-banner {
+  background: linear-gradient(135deg, #1a2a4a, #1a2235);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.welcome-avatar {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.welcome-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.welcome-text h3 { font-size: 16px; font-weight: 700; }
+.welcome-text p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* STATS ROW */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 10px;
+  text-align: center;
+}
+.stat-card .num {
+  font-size: 24px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+}
+.stat-card .lbl { font-size: 10px; color: var(--muted); margin-top: 3px; letter-spacing: 0.5px; }
+
+/* CERT CARDS */
+.section-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 20px 0 12px;
+}
+.cert-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  animation: fadeUp 0.4s ease both;
+}
+.cert-thumb {
+  width: 62px; height: 62px;
+  border-radius: 8px;
+  background: var(--surface);
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+.cert-thumb-placeholder {
+  width: 62px; height: 62px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.cert-info { flex: 1; }
+.cert-event { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.cert-college { font-size: 12px; color: var(--muted); }
+.prize-badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+.prize-1st { background: rgba(245,200,66,0.15); color: var(--gold); }
+.prize-2nd { background: rgba(192,192,192,0.15); color: #c0c0c0; }
+.prize-3rd { background: rgba(205,127,50,0.15); color: #cd7f32; }
+.prize-part { background: rgba(78,142,247,0.15); color: var(--accent); }
+.cert-date { font-size: 10px; color: var(--muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+
+/* UPLOAD FORM */
+.upload-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.upload-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+
+.file-drop {
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 14px;
+  position: relative;
+}
+.file-drop:hover { border-color: var(--accent); background: rgba(79,142,247,0.04); }
+.file-drop input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;
+}
+.file-drop-icon { font-size: 36px; margin-bottom: 8px; }
+.file-drop p { font-size: 13px; color: var(--muted); }
+.file-drop .file-name { font-size: 12px; color: var(--green); margin-top: 6px; font-weight: 600; }
+
+/* PROFILE PANEL */
+.profile-hero {
+  background: linear-gradient(135deg, #1a2a4a, #1a2235);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 20px;
+  text-align: center;
+  margin-bottom: 16px;
+  position: relative;
+}
+.profile-pic-wrap {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 800;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.profile-pic-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.profile-pic-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-size: 18px;
+}
+.profile-pic-wrap:hover .profile-pic-overlay { opacity: 1; }
+.profile-pic-input { display: none; }
+.profile-name { font-size: 20px; font-weight: 800; }
+.profile-roll { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
+
+.info-grid {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.info-row {
+  display: flex;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row .key { color: var(--muted); width: 130px; flex-shrink: 0; font-size: 12px; }
+.info-row .val { font-weight: 600; }
+
+/* SETTINGS */
+.settings-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.settings-item:hover { background: #1f2e45; }
+.settings-item .left { display: flex; align-items: center; gap: 12px; }
+.settings-item .icon { font-size: 18px; }
+.settings-item .title { font-size: 14px; font-weight: 600; }
+.settings-item .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.settings-item .arr { color: var(--muted); font-size: 16px; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(6px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 22px;
+  width: 100%;
+  max-width: 420px;
+  animation: fadeUp 0.3s ease both;
+}
+.modal h3 { font-size: 18px; font-weight: 800; margin-bottom: 18px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+.btn-ghost {
+  flex: 1;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-ghost:hover { background: var(--border); }
+.btn-danger {
+  flex: 1;
+  padding: 12px;
+  background: rgba(245,101,101,0.15);
+  border: 1px solid var(--red);
+  border-radius: 8px;
+  color: var(--red);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--green);
+  color: #0a2a1a;
+  padding: 12px 22px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+  z-index: 500;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.error { background: var(--red); color: white; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* LOADING SPINNER */
+.spinner {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* EMPTY STATE */
+.empty {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--muted);
+}
+.empty .icon { font-size: 48px; margin-bottom: 12px; }
+.empty h4 { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.empty p { font-size: 13px; }
+
+/* SEARCH BAR */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.search-bar input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  outline: none;
+}
+.search-bar input::placeholder { color: var(--muted); }
+
+/* ADMIN LOOKUP */
+.lookup-result {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 14px;
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 360px) {
+  .row2 { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: repeat(3,1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ SPLASH ══════════════ -->
+<div class="screen active" id="splash">
+  <div class="splash-logo">AcadWallet</div>
+  <div class="splash-sub">Vel Tech University</div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+
+<!-- ══════════════ REGISTER ══════════════ -->
+<div class="screen" id="register">
+  <div class="reg-header">
+    <h1>Create Your Account</h1>
+    <p>Register once — access forever</p>
+  </div>
+
+  <div class="form-card">
+
+    <div class="section-label">Personal Details</div>
+
+    <div class="field">
+      <label>Full Name *</label>
+      <input type="text" id="r-name" placeholder="e.g. Arun Kumar S">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Roll Number *</label>
+        <input type="text" id="r-roll" placeholder="e.g. 22CS001">
+      </div>
+      <div class="field">
+        <label>Date of Birth *</label>
+        <input type="date" id="r-dob">
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Mobile Number *</label>
+        <input type="tel" id="r-mobile" placeholder="10-digit number">
+      </div>
+      <div class="field">
+        <label>Gender *</label>
+        <select id="r-gender">
+          <option value="">Select</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Email Address *</label>
+      <input type="email" id="r-email" placeholder="e.g. arun@veltech.edu.in">
+    </div>
+
+    <div class="section-label">Academic Details</div>
+
+    <div class="field">
+      <label>College Name *</label>
+      <input type="text" id="r-college" placeholder="e.g. Vel Tech University" value="Vel Tech University">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Department *</label>
+        <select id="r-dept">
+          <option value="">Select</option>
+          <option>Computer Science &amp; Engineering</option>
+          <option>Information Technology</option>
+          <option>Electronics &amp; Communication</option>
+          <option>Electrical Engineering</option>
+          <option>Mechanical Engineering</option>
+          <option>Civil Engineering</option>
+          <option>Artificial Intelligence &amp; DS</option>
+          <option>MBA</option>
+          <option>MCA</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Course *</label>
+        <input type="text" id="r-course" placeholder="e.g. B.E., B.Tech, M.E.">
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Academic Year *</label>
+        <select id="r-year">
+          <option value="">Select</option>
+          <option>1st Year</option>
+          <option>2nd Year</option>
+          <option>3rd Year</option>
+          <option>4th Year</option>
+          <option>PG 1st Year</option>
+          <option>PG 2nd Year</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Section *</label>
+        <input type="text" id="r-section" placeholder="e.g. A, B, C">
+      </div>
+    </div>
+
+    <button class="btn-primary" id="reg-btn" onclick="register()">Create Account</button>
+    <div class="login-link">Already have an account? <span onclick="showLogin()">Sign In</span></div>
+  </div>
+</div>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<div class="screen" id="login">
+  <div style="padding:40px 16px; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh;">
+    <div class="login-card">
+      <h2>Welcome Back 👋</h2>
+      <p>Sign in with your Roll Number and Date of Birth</p>
+
+      <div class="field">
+        <label>Roll Number</label>
+        <input type="text" id="l-roll" placeholder="e.g. 22CS001">
+      </div>
+      <div class="field">
+        <label>Date of Birth</label>
+        <input type="date" id="l-dob">
+      </div>
+
+      <button class="btn-primary" id="login-btn" onclick="login()">Sign In</button>
+      <div class="login-link" style="margin-top:16px;">New here? <span onclick="showRegister()">Create Account</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MAIN APP ══════════════ -->
+<div class="screen" id="app">
+
+  <div class="topnav">
+    <div class="topnav-logo">AcadWallet</div>
+    <div class="topnav-right">
+      <div class="avatar-btn" id="top-avatar" onclick="switchTab('profile')">?</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('home')">🏠 Home</div>
+    <div class="tab" onclick="switchTab('upload')">📤 Upload</div>
+    <div class="tab" onclick="switchTab('certs')">🏆 My Certs</div>
+    <div class="tab" onclick="switchTab('profile')">👤 Profile</div>
+  </div>
+
+  <!-- HOME TAB -->
+  <div class="tab-panel active" id="panel-home">
+    <div class="welcome-banner">
+      <div class="welcome-avatar" id="hw-avatar">?</div>
+      <div class="welcome-text">
+        <h3 id="hw-name">Student</h3>
+        <p id="hw-dept">Department · Year</p>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="num" id="stat-total">0</div>
+        <div class="lbl">Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="stat-wins">0</div>
+        <div class="lbl">Wins</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="stat-part">0</div>
+        <div class="lbl">Participation</div>
+      </div>
+    </div>
+
+    <div class="section-title">Recent Certificates</div>
+    <div id="home-certs"></div>
+  </div>
+
+  <!-- UPLOAD TAB -->
+  <div class="tab-panel" id="panel-upload">
+    <div class="upload-card">
+      <h3>📤 Upload Certificate</h3>
+
+      <div class="file-drop" id="file-drop-area">
+        <input type="file" id="cert-file" accept="image/*,.pdf" onchange="handleFileSelect(this)">
+        <div class="file-drop-icon">📄</div>
+        <p>Tap to upload certificate photo or PDF</p>
+        <div class="file-name" id="file-name-show"></div>
+      </div>
+
+      <div class="field">
+        <label>Event Name *</label>
+        <input type="text" id="u-event" placeholder="e.g. National Coding Challenge">
+      </div>
+      <div class="field">
+        <label>Host College / Organization *</label>
+        <input type="text" id="u-hostcollege" placeholder="e.g. Anna University, Chennai">
+      </div>
+      <div class="field">
+        <label>Event Category</label>
+        <select id="u-category">
+          <option value="">Select Category</option>
+          <option>Technical</option>
+          <option>Cultural</option>
+          <option>Sports</option>
+          <option>Literary</option>
+          <option>Management</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Prize / Achievement *</label>
+        <select id="u-prize">
+          <option>Participation</option>
+          <option>1st Prize</option>
+          <option>2nd Prize</option>
+          <option>3rd Prize</option>
+          <option>Special Award</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Event Date</label>
+        <input type="date" id="u-date">
+      </div>
+      <div class="field">
+        <label>Additional Notes</label>
+        <input type="text" id="u-notes" placeholder="Any extra details…">
+      </div>
+
+      <button class="btn-primary" id="upload-btn" onclick="uploadCert()">Submit Certificate</button>
+    </div>
+  </div>
+
+  <!-- MY CERTS TAB -->
+  <div class="tab-panel" id="panel-certs">
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" id="cert-search" placeholder="Search certificates…" oninput="renderMyCerts()">
+    </div>
+    <div id="all-certs-list"></div>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div class="tab-panel" id="panel-profile">
+
+    <div class="profile-hero">
+      <div class="profile-pic-wrap" onclick="triggerPicUpload()">
+        <span id="profile-initials">?</span>
+        <div class="profile-pic-overlay">📷</div>
+      </div>
+      <input type="file" class="profile-pic-input" id="pic-input" accept="image/*" onchange="handlePicUpload(this)">
+      <div class="profile-name" id="p-name">—</div>
+      <div class="profile-roll" id="p-roll">—</div>
+    </div>
+
+    <div class="info-grid" id="profile-info-grid"></div>
+
+    <div class="section-title" style="margin-top:20px;">Settings</div>
+
+    <div class="settings-item" onclick="openEditNameModal()">
+      <div class="left">
+        <span class="icon">✏️</span>
+        <div>
+          <div class="title">Edit Name</div>
+          <div class="sub">Update your display name</div>
+        </div>
+      </div>
+      <span class="arr">›</span>
+    </div>
+
+    <div class="settings-item" onclick="triggerPicUpload()">
+      <div class="left">
+        <span class="icon">🖼️</span>
+        <div>
+          <div class="title">Change Profile Picture</div>
+          <div class="sub">Upload a photo</div>
+        </div>
+      </div>
+      <span class="arr">›</span>
+    </div>
+
+    <div class="settings-item" onclick="openAdminModal()">
+      <div class="left">
+        <span class="icon">🔍</span>
+        <div>
+          <div class="title">Lookup Student</div>
+          <div class="sub">Search by Roll Number</div>
+        </div>
+      </div>
+      <span class="arr">›</span>
+    </div>
+
+    <div class="settings-item" onclick="confirmLogout()">
+      <div class="left">
+        <span class="icon">🚪</span>
+        <div>
+          <div class="title">Sign Out</div>
+          <div class="sub">Return to login screen</div>
+        </div>
+      </div>
+      <span class="arr">›</span>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ══════ MODALS ══════ -->
+
+<!-- Edit Name Modal -->
+<div class="modal-overlay" id="modal-editname">
+  <div class="modal">
+    <h3>Edit Name</h3>
+    <div class="field">
+      <label>Display Name</label>
+      <input type="text" id="edit-name-input" placeholder="Your name">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('modal-editname')">Cancel</button>
+      <button class="btn-primary" style="flex:1;margin-top:0;" onclick="saveName()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Lookup Modal -->
+<div class="modal-overlay" id="modal-admin">
+  <div class="modal">
+    <h3>🔍 Student Lookup</h3>
+    <div class="field">
+      <label>Enter Roll Number</label>
+      <input type="text" id="admin-roll-input" placeholder="e.g. 22CS001">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('modal-admin')">Close</button>
+      <button class="btn-primary" style="flex:1;margin-top:0;" onclick="lookupStudent()">Search</button>
+    </div>
+    <div class="lookup-result" id="lookup-result"></div>
+  </div>
+</div>
+
+<!-- Logout Confirm Modal -->
+<div class="modal-overlay" id="modal-logout">
+  <div class="modal">
+    <h3>Sign Out?</h3>
+    <p style="color:var(--muted);font-size:13px;">You will need to sign in again to access your account.</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('modal-logout')">Cancel</button>
+      <button class="btn-danger" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════ FIREBASE + APP LOGIC ══════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCPVO6mMIbLLXZgRnwXEUudkoNgNPiqp9Q",
+  authDomain: "campuslive-2590d.firebaseapp.com",
+  projectId: "campuslive-2590d",
+  storageBucket: "campuslive-2590d.firebasestorage.app",
+  messagingSenderId: "454604822969",
+  appId: "1:454604822969:web:2b067a9421acb94b7ebe68"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+const storage = getStorage(fbApp);
+
+// ── STATE ──
+let currentUser = null;
+let uploadedFile = null;
+
+// ── HELPERS ──
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + type + ' show';
+  setTimeout(() => el.className = 'toast ' + type, 3000);
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+
+function setBtn(id, loading) {
+  const btn = document.getElementById(id);
+  btn.disabled = loading;
+  btn.innerHTML = loading ? '<span class="spinner"></span>Please wait…' : btn.dataset.label || btn.innerHTML;
+}
+
+function initials(name) {
+  return name ? name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase() : '?';
+}
+
+function prizeBadge(prize) {
+  if (prize === '1st Prize') return '<span class="prize-badge prize-1st">🥇 1st Prize</span>';
+  if (prize === '2nd Prize') return '<span class="prize-badge prize-2nd">🥈 2nd Prize</span>';
+  if (prize === '3rd Prize') return '<span class="prize-badge prize-3rd">🥉 3rd Prize</span>';
+  if (prize === 'Special Award') return '<span class="prize-badge prize-1st">⭐ Special Award</span>';
+  return '<span class="prize-badge prize-part">🎟 Participation</span>';
+}
+
+function fmtDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+// ── SPLASH → REGISTER/LOGIN ──
+setTimeout(() => {
+  const saved = localStorage.getItem('acadwallet_roll');
+  if (saved) {
+    // Auto-fill login
+    document.getElementById('l-roll').value = saved;
+    show('login');
+  } else {
+    show('register');
+  }
+}, 2600);
+
+// ── REGISTER ──
+window.showRegister = () => show('register');
+window.showLogin = () => show('login');
+
+window.register = async () => {
+  const fields = {
+    name: document.getElementById('r-name').value.trim(),
+    roll: document.getElementById('r-roll').value.trim().toUpperCase(),
+    dob: document.getElementById('r-dob').value,
+    mobile: document.getElementById('r-mobile').value.trim(),
+    gender: document.getElementById('r-gender').value,
+    email: document.getElementById('r-email').value.trim(),
+    college: document.getElementById('r-college').value.trim(),
+    dept: document.getElementById('r-dept').value,
+    course: document.getElementById('r-course').value.trim(),
+    year: document.getElementById('r-year').value,
+    section: document.getElementById('r-section').value.trim().toUpperCase(),
+    profilePic: '',
+    createdAt: new Date().toISOString()
+  };
+
+  for (const [k, v] of Object.entries(fields)) {
+    if (k === 'profilePic' || k === 'createdAt') continue;
+    if (!v) { toast('Please fill all required fields', 'error'); return; }
+  }
+
+  const btn = document.getElementById('reg-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Creating account…';
+
+  try {
+    // Check if roll already exists
+    const existing = await getDoc(doc(db, 'students', fields.roll));
+    if (existing.exists()) {
+      toast('Roll number already registered. Please sign in.', 'error');
+      btn.disabled = false;
+      btn.innerHTML = 'Create Account';
+      return;
+    }
+
+    await setDoc(doc(db, 'students', fields.roll), fields);
+    localStorage.setItem('acadwallet_roll', fields.roll);
+    currentUser = fields;
+    loadApp();
+    toast('Account created! Welcome 🎉');
+  } catch (e) {
+    toast('Error: ' + e.message, 'error');
+    btn.disabled = false;
+    btn.innerHTML = 'Create Account';
+  }
+};
+
+// ── LOGIN ──
+window.login = async () => {
+  const roll = document.getElementById('l-roll').value.trim().toUpperCase();
+  const dob = document.getElementById('l-dob').value;
+  if (!roll || !dob) { toast('Enter Roll Number and Date of Birth', 'error'); return; }
+
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Signing in…';
+
+  try {
+    const snap = await getDoc(doc(db, 'students', roll));
+    if (!snap.exists()) { toast('Roll number not found. Please register.', 'error'); btn.disabled=false; btn.innerHTML='Sign In'; return; }
+    const student = snap.data();
+    if (student.dob !== dob) { toast('Incorrect Date of Birth', 'error'); btn.disabled=false; btn.innerHTML='Sign In'; return; }
+
+    currentUser = student;
+    localStorage.setItem('acadwallet_roll', roll);
+    loadApp();
+    toast('Welcome back, ' + student.name.split(' ')[0] + '! 👋');
+  } catch (e) {
+    toast('Error: ' + e.message, 'error');
+    btn.disabled = false;
+    btn.innerHTML = 'Sign In';
+  }
+};
+
+// ── LOAD APP ──
+async function loadApp() {
+  show('app');
+  updateAvatars();
+  renderProfile();
+  await loadCerts();
+}
+
+function updateAvatars() {
+  const u = currentUser;
+  const init = initials(u.name);
+  ['top-avatar','hw-avatar','profile-initials'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (u.profilePic) {
+      if (id === 'top-avatar') el.innerHTML = `<img src="${u.profilePic}" alt="avatar">`;
+      else if (id === 'hw-avatar') el.innerHTML = `<img src="${u.profilePic}" alt="avatar">`;
+      else el.innerHTML = `<img src="${u.profilePic}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else {
+      el.textContent = init;
+    }
+  });
+  document.getElementById('hw-name').textContent = u.name;
+  document.getElementById('hw-dept').textContent = u.dept + ' · ' + u.year;
+  document.getElementById('p-name').textContent = u.name;
+  document.getElementById('p-roll').textContent = u.roll;
+}
+
+// ── PROFILE RENDER ──
+function renderProfile() {
+  const u = currentUser;
+  const grid = document.getElementById('profile-info-grid');
+  const rows = [
+    ['Roll Number', u.roll],
+    ['Date of Birth', fmtDate(u.dob)],
+    ['Mobile', u.mobile],
+    ['Email', u.email],
+    ['Gender', u.gender],
+    ['College', u.college],
+    ['Department', u.dept],
+    ['Course', u.course],
+    ['Academic Year', u.year],
+    ['Section', u.section],
+  ];
+  grid.innerHTML = rows.map(([k,v]) =>
+    `<div class="info-row"><span class="key">${k}</span><span class="val">${v||'—'}</span></div>`
+  ).join('');
+}
+
+// ── LOAD CERTS ──
+let allCerts = [];
+
+async function loadCerts() {
+  try {
+    const q = query(
+      collection(db, 'certificates'),
+      where('roll', '==', currentUser.roll),
+      orderBy('uploadedAt', 'desc')
+    );
+    const snap = await getDocs(q);
+    allCerts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {
+    // Fallback without orderBy if index not ready
+    try {
+      const q2 = query(collection(db, 'certificates'), where('roll', '==', currentUser.roll));
+      const snap2 = await getDocs(q2);
+      allCerts = snap2.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => b.uploadedAt?.localeCompare?.(a.uploadedAt) || 0);
+    } catch(e2) { allCerts = []; }
+  }
+  renderHomeStats();
+  renderHomeCerts();
+  renderMyCerts();
+}
+
+function renderHomeStats() {
+  document.getElementById('stat-total').textContent = allCerts.length;
+  document.getElementById('stat-wins').textContent = allCerts.filter(c => c.prize && c.prize !== 'Participation').length;
+  document.getElementById('stat-part').textContent = allCerts.filter(c => c.prize === 'Participation').length;
+}
+
+function renderHomeCerts() {
+  const el = document.getElementById('home-certs');
+  const recent = allCerts.slice(0, 3);
+  if (!recent.length) {
+    el.innerHTML = `<div class="empty"><div class="icon">🏅</div><h4>No certificates yet</h4><p>Upload your first certificate to get started!</p></div>`;
+    return;
+  }
+  el.innerHTML = recent.map(c => certCardHTML(c)).join('');
+}
+
+window.renderMyCerts = function() {
+  const q = (document.getElementById('cert-search')?.value || '').toLowerCase();
+  const el = document.getElementById('all-certs-list');
+  const filtered = q ? allCerts.filter(c => c.event?.toLowerCase().includes(q) || c.hostCollege?.toLowerCase().includes(q) || c.prize?.toLowerCase().includes(q)) : allCerts;
+  if (!filtered.length) {
+    el.innerHTML = `<div class="empty"><div class="icon">🔍</div><h4>${q ? 'No results' : 'No certificates yet'}</h4><p>${q ? 'Try a different search' : 'Upload your first certificate!'}</p></div>`;
+    return;
+  }
+  el.innerHTML = filtered.map(c => certCardHTML(c)).join('');
+};
+
+function certCardHTML(c) {
+  const thumb = c.fileURL
+    ? (c.fileURL.includes('.pdf') ? `<div class="cert-thumb-placeholder">📄</div>` : `<img class="cert-thumb" src="${c.fileURL}" alt="cert">`)
+    : `<div class="cert-thumb-placeholder">📄</div>`;
+  return `<div class="cert-card">
+    ${thumb}
+    <div class="cert-info">
+      <div class="cert-event">${c.event || '—'}</div>
+      <div class="cert-college">${c.hostCollege || '—'}</div>
+      ${prizeBadge(c.prize)}
+      ${c.eventDate ? `<div class="cert-date">${fmtDate(c.eventDate)}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+// ── UPLOAD ──
+window.handleFileSelect = function(input) {
+  uploadedFile = input.files[0] || null;
+  document.getElementById('file-name-show').textContent = uploadedFile ? uploadedFile.name : '';
+};
+
+window.uploadCert = async () => {
+  const event = document.getElementById('u-event').value.trim();
+  const hostCollege = document.getElementById('u-hostcollege').value.trim();
+  const prize = document.getElementById('u-prize').value;
+  const category = document.getElementById('u-category').value;
+  const eventDate = document.getElementById('u-date').value;
+  const notes = document.getElementById('u-notes').value.trim();
+
+  if (!event || !hostCollege) { toast('Event Name and Host College are required', 'error'); return; }
+
+  const btn = document.getElementById('upload-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Uploading…';
+
+  try {
+    let fileURL = '';
+    if (uploadedFile) {
+      const storageRef = ref(storage, `certificates/${currentUser.roll}/${Date.now()}_${uploadedFile.name}`);
+      const snap = await uploadBytes(storageRef, uploadedFile);
+      fileURL = await getDownloadURL(snap.ref);
+    }
+
+    const certData = {
+      roll: currentUser.roll,
+      name: currentUser.name,
+      dept: currentUser.dept,
+      year: currentUser.year,
+      college: currentUser.college,
+      event, hostCollege, prize, category, eventDate, notes, fileURL,
+      uploadedAt: new Date().toISOString()
+    };
+
+    await addDoc(collection(db, 'certificates'), certData);
+
+    // Reset form
+    ['u-event','u-hostcollege','u-notes','u-date'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('u-prize').selectedIndex = 0;
+    document.getElementById('u-category').selectedIndex = 0;
+    document.getElementById('file-name-show').textContent = '';
+    uploadedFile = null;
+
+    await loadCerts();
+    switchTab('certs');
+    toast('Certificate uploaded! 🎉');
+  } catch(e) {
+    toast('Upload failed: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Submit Certificate';
+  }
+};
+
+// ── TABS ──
+window.switchTab = function(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['home','upload','certs','profile'][i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'certs') renderMyCerts();
+};
+
+// ── PROFILE PIC ──
+window.triggerPicUpload = () => document.getElementById('pic-input').click();
+
+window.handlePicUpload = async (input) => {
+  const file = input.files[0];
+  if (!file) return;
+
+  toast('Uploading picture…');
+  try {
+    const storageRef = ref(storage, `profiles/${currentUser.roll}/avatar`);
+    const snap = await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(snap.ref);
+
+    await setDoc(doc(db, 'students', currentUser.roll), { profilePic: url }, { merge: true });
+    currentUser.profilePic = url;
+
+    // Update all pic elements
+    const profileWrap = document.getElementById('profile-initials');
+    profileWrap.innerHTML = `<img src="${url}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+
+    const topAvatar = document.getElementById('top-avatar');
+    topAvatar.innerHTML = `<img src="${url}" alt="avatar">`;
+
+    const hwAvatar = document.getElementById('hw-avatar');
+    hwAvatar.innerHTML = `<img src="${url}" alt="avatar">`;
+
+    toast('Profile picture updated! 📸');
+  } catch(e) {
+    toast('Failed to upload: ' + e.message, 'error');
+  }
+};
+
+// ── EDIT NAME ──
+window.openEditNameModal = () => {
+  document.getElementById('edit-name-input').value = currentUser.name;
+  document.getElementById('modal-editname').classList.add('open');
+};
+
+window.saveName = async () => {
+  const newName = document.getElementById('edit-name-input').value.trim();
+  if (!newName) { toast('Name cannot be empty', 'error'); return; }
+  try {
+    await setDoc(doc(db, 'students', currentUser.roll), { name: newName }, { merge: true });
+    currentUser.name = newName;
+    updateAvatars();
+    renderProfile();
+    closeModal('modal-editname');
+    toast('Name updated! ✅');
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  }
+};
+
+// ── ADMIN LOOKUP ──
+window.openAdminModal = () => {
+  document.getElementById('admin-roll-input').value = '';
+  document.getElementById('lookup-result').style.display = 'none';
+  document.getElementById('modal-admin').classList.add('open');
+};
+
+window.lookupStudent = async () => {
+  const roll = document.getElementById('admin-roll-input').value.trim().toUpperCase();
+  if (!roll) { toast('Enter a roll number', 'error'); return; }
+
+  const resultEl = document.getElementById('lookup-result');
+  resultEl.innerHTML = '<span class="spinner"></span> Searching…';
+  resultEl.style.display = 'block';
+
+  try {
+    const studentSnap = await getDoc(doc(db, 'students', roll));
+    if (!studentSnap.exists()) { resultEl.innerHTML = '<p style="color:var(--red)">Student not found.</p>'; return; }
+
+    const s = studentSnap.data();
+    const q2 = query(collection(db, 'certificates'), where('roll', '==', roll));
+    const certsSnap = await getDocs(q2);
+    const certs = certsSnap.docs.map(d => d.data());
+
+    const wins = certs.filter(c => c.prize && c.prize !== 'Participation').length;
+
+    resultEl.innerHTML = `
+      <div style="margin-bottom:12px;">
+        <strong>${s.name}</strong> <span style="color:var(--muted);font-size:12px;">${s.roll}</span><br>
+        <span style="color:var(--muted);font-size:12px;">${s.dept} · ${s.year} · Section ${s.section}</span>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:12px;">
+        <div class="stat-card" style="flex:1;"><div class="num">${certs.length}</div><div class="lbl">Certificates</div></div>
+        <div class="stat-card" style="flex:1;"><div class="num">${wins}</div><div class="lbl">Wins</div></div>
+      </div>
+      ${certs.length ? certs.map(c =>
+        `<div style="background:var(--surface);border-radius:8px;padding:10px;margin-bottom:8px;font-size:12px;">
+          <strong>${c.event}</strong><br>
+          <span style="color:var(--muted);">${c.hostCollege}</span><br>
+          ${prizeBadge(c.prize)}
+        </div>`
+      ).join('') : '<p style="color:var(--muted);font-size:13px;">No certificates uploaded yet.</p>'}
+    `;
+  } catch(e) {
+    resultEl.innerHTML = '<p style="color:var(--red)">Error: ' + e.message + '</p>';
+  }
+};
+
+// ── LOGOUT ──
+window.confirmLogout = () => document.getElementById('modal-logout').classList.add('open');
+
+window.logout = () => {
+  currentUser = null;
+  allCerts = [];
+  localStorage.removeItem('acadwallet_roll');
+  closeModal('modal-logout');
+  show('login');
+};
+
+// ── MODALS ──
+window.closeModal = (id) => document.getElementById(id).classList.remove('open');
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+</script>
+</body>
+</html>
